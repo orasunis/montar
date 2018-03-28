@@ -1,0 +1,25 @@
+# The address the server is binding to.
+address = "127.0.0.1:25565"
+
+[log]
+# The log level.
+# Possible values:
+# - OFF: No logging at all.
+# - ERROR: Only errors are logged.
+# - WARN: Warnings and errors are shown.
+# - INFO: Useful information and all of the above are shown.
+# - DEBUG: Debugging information and all of the above are shown.
+# - TRACE: Very low priority and all of the above are shown.
+level = "INFO"
+
+# Defines the date format used for logging.
+# For more information about the formatting syntax,
+# you might want to visit [http://www.strftime.org].
+# The local time zone is used.
+date_format = "%d-%m-%Y %H-%M-%S"
+
+# Additional files to save the logging output to.
+# Does not support additional formatting e.g. dates at the moment.
+# Would look like:
+# files = [ "output.log", "another-output.log" ]
+files = []
