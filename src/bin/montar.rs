@@ -1,69 +1,24 @@
-//! Montar is a minecraft server written entirely in rust.
+extern crate montar;
 
-extern crate tokio;
-
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate toml;
-
-#[macro_use]
 extern crate log;
+
 extern crate chrono;
 extern crate fern;
+extern crate toml;
+
+use montar::{Config, Montar};
 
 use std::env;
 use std::fs::File;
 use std::io::Read;
 use std::process;
 
-#[derive(Deserialize)]
-pub struct Config {
-    /// The address the server is binding to.
-    #[serde(default = "default_address")]
-    pub address: String,
-
-    /// Logging
-    pub log: LogConfig,
-}
-
-#[derive(Deserialize)]
-pub struct LogConfig {
-    /// The log level.
-    #[serde(default = "default_level_filter")]
-    pub level: log::LevelFilter,
-
-    /// The date format.
-    /// As formatting syntax, strftime is used.
-    #[serde(default = "default_date_format")]
-    pub date_format: String,
-
-    /// Additional files to save the logging output to.
-    /// Does not support formatting like dates at the moment.
-    #[serde(default = "Vec::new")]
-    pub files: Vec<String>,
-}
-
-// default values for the config
-
-fn default_address() -> String {
-    "127.0.0.1:25565".to_owned()
-}
-
-fn default_level_filter() -> log::LevelFilter {
-    log::LevelFilter::Info
-}
-
-fn default_date_format() -> String {
-    "%d-%m-%Y %H-%M-%S".to_owned()
-}
-
 fn main() {
-    // First load the configuration file.
     let config_file = env::args()
         .nth(1)
         .unwrap_or_else(|| "Montar.toml".to_owned());
 
+    // First load the configuration file.
     let mut config_file = File::open(&config_file).unwrap_or_else(move |err| {
         eprintln!(
             "Could not open configuration file located at '{}' because of the following error:",
@@ -110,7 +65,7 @@ fn main() {
         .chain(std::io::stdout());
 
     // Allow for files to save to.
-    for file in config.log.files {
+    for file in &config.log.files {
         let log_file = fern::log_file(&file).unwrap_or_else(move |err| {
             eprintln!(
                 "Could not open log file located at '{}' because of the following error:",
@@ -129,5 +84,7 @@ fn main() {
         process::exit(4);
     });
 
-    info!("Address: {}", config.address);
+    let mut montar = Montar::new(config);
+
+    montar.start();
 }

@@ -24,3 +24,11 @@ toml = "0.4"
 log = { version = "0.4", features = ["serde"] }
 fern = "0.5"
 chrono = { version = "0.4", features = ["serde"] }
+
+[lib]
+name = "montar"
+path = "src/lib.rs"
+
+[[bin]]
+name = "montar-start"
+path = "src/bin/montar.rs"
